@@ -39,7 +39,7 @@ const deleteTodo = button => {
 renderTodos();
 
 // event listeners to handle add todo action
-addBtn.addEventListener('click', addTodo());
+addBtn.addEventListener('click', addTodo);
 todoInput.addEventListener('keydown', (event) => {
   if (event.key === "Enter") {
     addTodo();
