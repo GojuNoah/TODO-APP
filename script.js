@@ -12,7 +12,8 @@ const renderTodos = () => {
   for (let i = 0; i < todoData.length; i++) {
     todoList.insertAdjacentHTML("afterbegin", 
       `<div class=todo-container id=${i}>
-           <p class=todo-txt>${todoData[i]}</p>
+           <input type=checkbox class=check-box ${todoData[i].completed ? "checked" : ""}>
+           <p class=todo-txt> ${todoData[i].completed ? `<s>${todoData[i].text}</s>` : todoData[i].text}</p>
            <button onclick=deleteTodo(this) class=del-btn>Delete Todo</button>
            <button onclick=editTodo(this) class=edit-btn id=edit-btn>Edit Todo</button>
        </div>`);
@@ -21,8 +22,11 @@ const renderTodos = () => {
 
 // function to add new todo from input
 const addTodo = () => {
-  const currentTodo = todoInput.value.trim();
-  if (currentTodo === "") {
+  const currentTodo = {
+    text: todoInput.value.trim(),
+    completed: false
+  };
+  if (currentTodo.text === "") {
     alert("Please enter a todo");
   } else {
     todoData.push(currentTodo);
@@ -45,12 +49,12 @@ const deleteTodo = button => {
 const editTodo = button => {
   thisTodo = button.parentElement.id;
   thisTodoInt = parseInt(thisTodo);
-  thisTodo = todoData[thisTodoInt];
+  thisTodo = todoData[thisTodoInt].text;
   const newText = prompt("Edit your todo:", thisTodo);
   if (newText === "") {
     alert("Please enter new text.");
   } else if (newText !== null && newText.trim() !== "") {
-    todoData[thisTodoInt] = newText;
+    todoData[thisTodoInt].text = newText;
     localStorage.setItem("data", JSON.stringify(todoData));
     renderTodos();
   };
@@ -65,4 +69,14 @@ todoInput.addEventListener('keydown', (event) => {
   if (event.key === "Enter") {
     addTodo();
   }
+});
+
+// update checkbox status
+todoList.addEventListener('change', (event) => {
+  if (event.target.classList.contains('check-box')) {
+    todoItem = parseInt(event.target.parentElement.id);
+    todoData[todoItem].completed = !todoData[todoItem].completed
+    localStorage.setItem("data", JSON.stringify(todoData));
+    renderTodos();
+  };
 });
